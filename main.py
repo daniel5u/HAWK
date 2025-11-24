@@ -1,4 +1,3 @@
-# run.py
 import sys
 import json
 import argparse
@@ -6,7 +5,7 @@ from parser import WorkflowParser, WorkflowValidationError
 
 def main():
     parser_args = argparse.ArgumentParser(description="运行WorkflowParser")
-    parser_args.add_argument("file", help="YAML 配置文件的路径 (例如: input.yml)")
+    parser_args.add_argument("file", help="YAML配置文件的路径 (例如: input.yml)")
     args = parser_args.parse_args()
 
     parser = WorkflowParser()
