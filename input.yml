@@ -1,0 +1,43 @@
+version: "1.0.0"
+
+workflow:
+  name: "tech_research_agent"
+  description: "An agent that researches a tech topic and writes a brief report."
+  input_schema:
+    topic: "string"
+  output_schema:
+    final_report: "string"
+
+state:
+  topic: "string"
+  search_results: "list"
+  report_draft: "string"
+  final_report: "string"
+
+nodes:
+  - name: search_for_topic
+    type: toolNode
+    tool: "tavily_search"
+    input_mapping:
+      query: "state.topic"
+    output_mapping:
+      state.search_results: "__output__"
+
+  - name: write_initial_report
+    type: agent
+    model:
+      provider: "openai"
+      name: "gpt-4-turbo"
+    system_prompt: "Write a report based on: {results}"
+    input_mapping:
+      results: "state.search_results"
+    output_mapping:
+      state.report_draft: "__output__"
+
+edges:
+  - from: "__start__"
+    to: "search_for_topic"
+  - from: "search_for_topic"
+    to: "write_initial_report"
+  - from: "write_initial_report"
+    to: "__end__"
